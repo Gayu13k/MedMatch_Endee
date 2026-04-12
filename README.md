@@ -243,7 +243,7 @@ MedMatch is for **research discovery only** and is not a substitute for professi
 
 ## 👩‍💻 About
 
-Built by **Gayathri Krishnan** for the Endee OSS Internship Project Showcase.
+Built by **Gayathri Krishnan** .
 
 - 🔗 Endee Vector DB: [endee.io](https://endee.io)
 - ⭐ Endee GitHub: [endee-io/endee](https://github.com/endee-io/endee)
