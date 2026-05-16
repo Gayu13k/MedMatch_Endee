@@ -1,11 +1,19 @@
 from endee import Endee, Precision
+import os
 
 INDEX_NAME = "medmatch_index"
 DIMENSION = 384
 
-client = Endee()
+try:
+    client = Endee()
+    ENDEE_AVAILABLE = True
+except Exception:
+    ENDEE_AVAILABLE = False
+    client = None
 
 def create_index():
+    if not ENDEE_AVAILABLE:
+        return
     try:
         client.create_index(
             name=INDEX_NAME,
@@ -13,11 +21,12 @@ def create_index():
             space_type="cosine",
             precision=Precision.INT8
         )
-        print(f"Index '{INDEX_NAME}' created.")
     except Exception as e:
         print(f"Index may already exist: {e}")
 
-def upsert_articles(articles: list, embeddings: list):
+def upsert_articles(articles, embeddings):
+    if not ENDEE_AVAILABLE:
+        return
     index = client.get_index(name=INDEX_NAME)
     vectors = []
     for article, embedding in zip(articles, embeddings):
@@ -36,14 +45,12 @@ def upsert_articles(articles: list, embeddings: list):
                 "journal": article["journal"][:48] if article["journal"] else "unknown"
             }
         })
-        if len(vectors) == 100:
-            index.upsert(vectors)
-            vectors = []
     if vectors:
         index.upsert(vectors)
-    print(f"Upserted {len(articles)} articles into Endee.")
 
-def search_similar(query_embedding: list, top_k: int = 5):
+def search_similar(query_embedding, top_k=5):
+    if not ENDEE_AVAILABLE:
+        return []
     index = client.get_index(name=INDEX_NAME)
     return index.query(
         vector=query_embedding,
@@ -51,3 +58,6 @@ def search_similar(query_embedding: list, top_k: int = 5):
         ef=128,
         include_vectors=False
     )
+
+def is_endee_available():
+    return ENDEE_AVAILABLE

@@ -9,7 +9,11 @@ st.set_page_config(
 
 st.title("🏥 MedMatch — Symptom Research Discovery")
 st.caption("Describe symptoms → discover real PubMed research → AI-powered insights")
-
+from vector_store import is_endee_available
+if is_endee_available():
+    st.success("🟢 Endee Vector DB connected — localhost:8080")
+else:
+    st.warning("🟡 Endee not connected — run Docker locally for full functionality")
 # Sidebar
 with st.sidebar:
     st.header("📚 Step 1: Index Research")
